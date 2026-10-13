@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import './style.css';
 
 function Coleccion() {
-  const totalPokes = 1025;
+  const [pokemones, setPokemones] = useState([]);
+  const totalPokes = pokemones.length;
   const [listaCapturados, setListaCapturados] = useState(() => {
     try {
       const guardados = JSON.parse(localStorage.getItem('misNumeros') || '[]');
@@ -12,7 +13,7 @@ function Coleccion() {
       return [];
     }
   });
-  const [pokemones, setPokemones] = useState([]);
+  
   const [nuevos, setNuevos] = useState([]);
   const navigate = useNavigate();
   const espacio = Array.from({ length: totalPokes }, (_, i) => i + 1);
@@ -32,11 +33,13 @@ function Coleccion() {
       .catch((error) => console.error('Error al cargar personajes:', error));
 }, []);
 
-  const capturarAleatorios = () => {
-    const seleccionados = Array.from(
-      { length: 4 },
-      () => Math.floor(Math.random() * totalPokes) + 1
-    );
+const capturarAleatorios = () => {
+  if (pokemones.length === 0) return;
+
+  const seleccionados = Array.from(
+    { length: 4 },
+    () => pokemones[Math.floor(Math.random() * pokemones.length)].id
+  );
     const vistos = new Set(listaCapturados);
     const resultados = seleccionados.map((id) => {
       const repetido = vistos.has(id);
@@ -72,12 +75,12 @@ function Coleccion() {
           >
             <p>{id}</p>
             <img
-              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
-              alt={pokemones[id - 1]?.name || `Pokémon ${id}`}
+              src={pokemones.find(personaje => personaje.id === id)?.imageUrl}
+              alt={pokemones.find(personaje => personaje.id === id)?.fullName}
               width="60"
               height="60"
             />
-            <p>{pokemones[id - 1]?.name || ''}</p>
+            <p>{pokemones.find(personaje => personaje.id === id)?.fullName}</p>
           </div>
         ))}
       </section>
@@ -93,11 +96,11 @@ function Coleccion() {
             >
               {capturado && (
                 <img
-                  src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
-                  width="auto"
+                  src={pokemones.find(personaje => personaje.id === id)?.imageUrl}
+                  width="45"
                   height="45"
                   loading="lazy"
-                  alt={String(id)}
+                  alt={pokemones.find(personaje => personaje.id === id)?.fullName || 'Personaje'}
                 />
               )}
               <p>{id}</p>

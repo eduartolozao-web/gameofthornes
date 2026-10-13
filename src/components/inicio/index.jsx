@@ -11,24 +11,19 @@ function Inicio() {
   useEffect(() => {
     const cargarPokemons = async () => {
       try {
-        if (tipopoke === 'All') {
-          const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025')
-          const responseData = await response.json()
-          setTodoslospokes(responseData.results ?? [])
-          return
+        const response = await fetch('https://thronesapi.com/api/v2/Characters')
+        if (!response.ok) {
+          throw new Error('No se pudieron cargar los personajes')
         }
-
-        const response = await fetch(`https://pokeapi.co/api/v2/type/${tipopoke}`)
         const responseData = await response.json()
-        const mascotas = responseData.pokemon?.map((entry) => entry.pokemon) ?? []
         setTodoslospokes(mascotas)
       } catch (error) {
         console.error('Error:', error)
       }
     }
 
-    cargarPokemons()
-  }, [tipopoke])
+    cargarPersonajes()
+  }, [])
 
   const resultados = busqueda.trim().length >= 3 && isNaN(busqueda)
     ? todoslospokes.filter((pokemon) =>

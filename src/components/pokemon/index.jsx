@@ -16,8 +16,13 @@ function Pokemon() {
 
 
     useEffect(() => {
-    fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
-      .then(response => response.json())
+    fetch(`https://thronesapi.com/api/v2/Characters/${name}`)
+      .then(response => {
+        if (!response.ok) {
+            throw new Error('No se pudo obtener el personaje');
+        }
+        return response.json();
+       })
       .then(responseData => setDatapoke(responseData))
       .catch(error => console.error("Error:", error));
     }, [name]); 
@@ -27,7 +32,11 @@ function Pokemon() {
         if (esFavorito) {
         nuevosFavoritos = favoritos.filter(p => p.id !== datapoke.id);
         } else {
-        nuevosFavoritos = [...favoritos, { id: datapoke.id, nombre: datapoke.name }];
+        nuevosFavoritos = [...favoritos, {
+            id: datapoke.id,
+            nombre: datapoke.fullName,
+            imagen: datapoke.imageUrl
+        }];
         }
         setFavoritos(nuevosFavoritos);
         localStorage.setItem('favoritos', JSON.stringify(nuevosFavoritos));
@@ -37,20 +46,17 @@ function Pokemon() {
     return (
         <div>
         <p>{datapoke.id}</p>
-        <h1>{datapoke.name}</h1>
+        <h1>{datapoke.fullname}</h1>
         <img 
-            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${datapoke.id}.png`} 
-            alt={datapoke.name} 
+            src={datapoke.imageUrl} 
+            alt={datapoke.fullName} 
             width="200"
         />
 
-        <p>{datapoke.id}</p>
-        <p>Altura: {datapoke.height/ 10} m / Peso: {datapoke.weight/ 10} kg</p>
+        <p>Título: {datapoke.title}</p>
+        <p>Familia: {datapoke.family}</p>
 
-        <p>hp: {datapoke.stats[0].base_stat}</p>
-        <p>Velocidad: {datapoke.stats[5].base_stat}</p>
-        <p>Ataque: {datapoke.stats[1].base_stat} Defensa: {datapoke.stats[2].base_stat}</p>
-        <p>Ataque Especial: {datapoke.stats[3].base_stat} Defensa Especial: {datapoke.stats[4].base_stat}</p>
+        
 
 
             <button onClick={toggleFavorito}>
