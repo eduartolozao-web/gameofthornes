@@ -18,11 +18,19 @@ function Coleccion() {
   const espacio = Array.from({ length: totalPokes }, (_, i) => i + 1);
 
   useEffect(() => {
-    fetch('https://pokeapi.co/api/v2/pokemon?limit=1025')
-      .then((respuesta) => respuesta.json())
-      .then((datos) => setPokemones(datos.results))
-      .catch((error) => console.error('Error al cargar Pokémon:', error));
-  }, []);
+    fetch('https://thronesapi.com/api/v2/Characters')
+      .then((respuesta) => {
+        if (!respuesta.ok) {
+          throw new Error('No se pudo consultar la API');
+        }
+        return respuesta.json();
+      })
+      .then((datos) => {
+        setPokemones(datos);
+        console.log('Personajes de Game of Thrones:', datos);
+      })
+      .catch((error) => console.error('Error al cargar personajes:', error));
+}, []);
 
   const capturarAleatorios = () => {
     const seleccionados = Array.from(
